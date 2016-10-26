@@ -44,25 +44,20 @@ class NodeBuilder
         siblings << row[col_index - 1]
       end
       
-      binding.pry if row == nil
       if col_index < row.length - 1
         siblings << row[col_index + 1]
       end
 
       siblings << row[col_index] unless row[col_index] == node
-
     end
-    puts
-    puts '--------'
-    puts siblings
-    puts '--------'
-    puts
+
+    siblings
   end
 
   def link_siblings(node_arr)
     node_arr.each_with_index do |row, row_index|
       row.each_with_index do |node, col_index|
-        node.siblings = get_siblings(node_arr, row_index, col_index)
+        node.siblings = get_siblings(node_arr, row_index, col_index).flatten
         node.position = get_position(row_index, col_index)
       end
     end.flatten

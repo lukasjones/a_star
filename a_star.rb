@@ -6,8 +6,6 @@ def a_star(start_node, end_node)
   closed_list = [] #discovered and examined
   current = start_node
 
-  # update came_from node
-
   while open_list.length > 0
     if current == end_node
       return current_path(current)
@@ -15,12 +13,18 @@ def a_star(start_node, end_node)
 
     current.siblings.each do |node|
       if !closed_list.include?(node)
+        node.set_f_cost(start_node, end_node)
         node.came_from = current
         open_list.push(node)
       end
     end
 
     open_list.delete(current)
+
+    open_list.sort! do |x, y|
+      x.f_cost <=> y.f_cost
+    end
+
     closed_list.push(current)
 
     current = open_list.first
@@ -41,8 +45,8 @@ end
 
 input = NodeBuilder.new(('a'..'z').to_a).node_array
 
-start_node = input[5]
-end_node = input[-3]
+start_node = input[0]
+end_node = input[-1]
 
 puts 'start node'
 puts start_node.name
@@ -52,7 +56,10 @@ puts end_node.name
 puts '----------'
 
 puts 'board'
-input.map{|x| x.name}.each_slice(4).to_a.each do |row|
+input.map do |x| 
+  x.set_f_cost(start_node, end_node)
+  [x.name, x.f_cost]
+end.each_slice(4).to_a.each do |row|
   puts row.inspect
 end
 puts '----------'
